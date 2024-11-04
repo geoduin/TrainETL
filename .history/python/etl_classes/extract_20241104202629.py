@@ -1,11 +1,9 @@
-from etl_abstract import AbstractETL
 from abc import ABC, abstractmethod
 
-class Transform(AbstractETL):
-    next: AbstractETL
-
-    def __init__(self):
+class Extract(ABC):
+    def __init__(self, source):
         super().__init__()
+        self.source = source
 
     @abstractmethod
     def run(self):

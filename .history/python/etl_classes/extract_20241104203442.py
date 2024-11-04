@@ -17,13 +17,13 @@ class Extract(AbstractETL):
     def get_data(self):
         pass
 
-class CSVExtract(Extract):
+class PostgresExtract(Extract):
 
     def __init__(self, source, next_step = None):
         super().__init__(source, next_step)
 
     def run(self):
-        # Execute this code.
+
         return super().run()
     
     def get_data(self):

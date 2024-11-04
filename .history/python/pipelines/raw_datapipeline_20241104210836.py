@@ -1,7 +1,7 @@
 from pipeline import Pipeline
 from python.etl_classes.etl_abstract import AbstractETL
 import pandas as pd  
-import sqlalchemy as sql
+
 
 class RawPipeline(Pipeline):
     etl_start_point: AbstractETL
@@ -11,8 +11,8 @@ class RawPipeline(Pipeline):
     
     def run(self):
         # Runs through each etl process.
-        connection = sql.create_engine("postgresql://mydb:tiger@localhost/test")
-
+        connection = None
+        
         # Extract data from various data sources
         stations = pd.read_csv("include/stations/stations-2022-01.csv")
         disruptions = pd.read_csv("include/disruptions/disruptions-2022.csv")
@@ -22,3 +22,5 @@ class RawPipeline(Pipeline):
         stations.to_sql("Stations", con=connection, if_exists="replace")
         disruptions.to_sql("Disruptions", con=connection, if_exists="replace")
         distances.to_sql("Distances", con=connection, if_exists="replace")
+
+        connection.close()

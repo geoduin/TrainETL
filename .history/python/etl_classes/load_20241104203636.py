@@ -16,18 +16,3 @@ class Load(AbstractETL):
     @abstractmethod
     def load_data(self, data):
         pass
-
-class SQLLoad(Load):
-
-    def __init__(self, target, next_step = None):
-        super().__init__(target, next_step)
-
-    def run(self):
-        return super().run()
-    
-    def apply_change(self, **change):
-        data = change.get("Data", None)
-        if data:
-            self.run()
-            
-        return None
