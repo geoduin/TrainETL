@@ -39,5 +39,5 @@ class SQLLoad(Load):
         return None
     
     def load_data(self, data: DataFrame, table=None, **config):
-        # Subject to change
         data.to_sql(table, self.connection, if_exists=config.get("if_exist", "fail"))
+        return super().load_data(data, table)

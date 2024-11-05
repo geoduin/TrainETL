@@ -1,9 +1,5 @@
 from abc import ABC, abstractmethod
 from .etl_abstract import AbstractETL
-import sqlalchemy as sql
-from sqlalchemy import create_engine
-from sqlalchemy.connectors import Connector
-from pandas import DataFrame
 
 class Load(AbstractETL):
 
@@ -18,15 +14,14 @@ class Load(AbstractETL):
         pass
 
     @abstractmethod
-    def load_data(self, data, table=None, **config):
+    def load_data(self, data, table=None):
         pass
 
 class SQLLoad(Load):
-    # Can be subjected to change.
-    def __init__(self, target: str, next_step = None, database = "postgres"):
+
+    def __init__(self, target, next_step = None, database = "postgres"):
         super().__init__(target, next_step)
         self.database = database
-        self.connection = create_engine(target)
 
     def run(self):
         return super().run()
@@ -38,6 +33,5 @@ class SQLLoad(Load):
 
         return None
     
-    def load_data(self, data: DataFrame, table=None, **config):
-        # Subject to change
-        data.to_sql(table, self.connection, if_exists=config.get("if_exist", "fail"))
+    def load_data(self, data, table=None):
+        return super().load_data(data, table)

@@ -8,7 +8,7 @@ from raw_pipeline.raw_data_dag import RawDataDAG
 from python import RawPipeline, CSVExtract, SQLLoad
 
 csv_extracter = CSVExtract()
-sql_loader = SQLLoad("postgresql+psycopg2://postgres:example@host.docker.internal:5431/postgres")
+sql_loader = SQLLoad("postgresql+psycopg2://postgres:example@host.docker.internal:5431/")
 raw_pipeline = RawPipeline(csv_extracter=csv_extracter, sql_loader=sql_loader)
 
 # Define the basic parameters of the DAG, like schedule and start_date

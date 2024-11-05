@@ -41,7 +41,7 @@ def test_db_connection():
     """
     works = True
     try:
-        connection = sql.create_engine("postgresql+psycopg2://postgres:example@host.docker.internal:5431/postgres")
+        connection = sql.create_engine("postgresql+psycopg2://postgres:example@localhost:5431/postgres")
     except:
         works = False
         assert works == True

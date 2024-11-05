@@ -14,7 +14,7 @@ class Extract(AbstractETL):
         pass
 
     @abstractmethod
-    def extract(self, file_path: str = None) -> DataFrame:
+    def get_data(self, file_path: str = None):
         pass
 
 class CSVExtract(Extract):
@@ -26,11 +26,6 @@ class CSVExtract(Extract):
         # Execute this code.
         return self.get_data()
     
-    def apply_change(self, **change):
-        return super().apply_change(**change)
-    
-    def extract(self, file_path:str = None) -> DataFrame:
-        if(not file_path):
-            raise ValueError("File path must be inserted")
-        data = read_csv(file_path)
+    def get_data(self, file_path) -> DataFrame:
+        data = read_csv(self.source)
         return data

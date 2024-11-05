@@ -18,7 +18,7 @@ class Load(AbstractETL):
         pass
 
     @abstractmethod
-    def load_data(self, data, table=None, **config):
+    def load_data(self, data, table=None):
         pass
 
 class SQLLoad(Load):
@@ -38,6 +38,6 @@ class SQLLoad(Load):
 
         return None
     
-    def load_data(self, data: DataFrame, table=None, **config):
-        # Subject to change
-        data.to_sql(table, self.connection, if_exists=config.get("if_exist", "fail"))
+    def load_data(self, data: DataFrame, table=None, if_exist=["replace", "fail", "append"]):
+        data.to_sql(table, self.connection)
+        return super().load_data(data, table)

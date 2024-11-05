@@ -30,7 +30,7 @@ class RawDataDAG:
 
             python_task = PythonOperator(
                 task_id="extract_raw_data",
-                python_callable=self.pipeline.run
+                python_callable=self.raw_pipeline.run
             )
 
             python_task
