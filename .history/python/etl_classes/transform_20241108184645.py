@@ -2,7 +2,6 @@ from .etl_abstract import AbstractETL
 from abc import ABC, abstractmethod
 from pandas import DataFrame
 from datetime import datetime
-import logging
 
 class Transform(AbstractETL):
     next: AbstractETL
@@ -23,25 +22,15 @@ class MissingEndDateTransformer(Transform):
 
     def run(self, data: DataFrame) -> DataFrame:
 
-        data["end_time"] = self._fill_current_date(data)
-        logging.info(data["end_time"].dtype)
-        data["duration"] = data.apply(lambda row: self._calculate_duration(row['start_time'], row["end_time"]), axis=1)
-
-        return data
-    
-    def apply_change(self, **change):
-        return super().apply_change(**change)
+        data["duration"] = data.apply(lambda row: self._calculate_duration(row['startdate'], row["enddate"]))
+        return super().run()
     
     def _calculate_duration(self, start: datetime, end: datetime) -> int:
-        """
-        Calculate difference between start and enddate
-        Returns the difference in a int value
-        """
         duration = end - start
-        return divmod(duration.total_seconds(), 60)[0]
+        return divmod(duration, 60)
 
     def _fill_current_date(self, data: DataFrame) -> DataFrame:
         """
         Fills in currentdate
         """
-        return data["end_time"].fillna(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return data

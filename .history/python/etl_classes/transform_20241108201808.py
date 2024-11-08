@@ -44,4 +44,4 @@ class MissingEndDateTransformer(Transform):
         """
         Fills in currentdate
         """
-        return data["end_time"].fillna(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return data["end_time"].fillna(datetime.now())
