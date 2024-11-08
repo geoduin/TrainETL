@@ -40,19 +40,18 @@ class CleaningPipeline(Pipeline):
             config = {"if_exist": "replace"}
 
             disruptions = self.sql_extracter.extract('SELECT * FROM "Disruptions"')
-            stations = self.sql_extracter.extract('SELECT * FROM "Stations"')
-            distances = self.sql_extracter.extract('SELECT * FROM "Distances"')
+            stations = self.sql_extracter.extract('SELECT * FROM "Disruptions"')
+            distances = self.sql_extracter.extract('SELECT * FROM "Disruptions"')
 
             disruptions["start_time"] = pd.to_datetime(disruptions["start_time"])
             disruptions["end_time"] = pd.to_datetime(disruptions["end_time"])
 
-            # Filter out all missing values
             disruptions = self.transformers.run(disruptions)
 
             self.sql_load.load_data(stations, "Stations", **config)
             self.sql_load.load_data(distances, "Distances", **config)
             
-            config["dtypes"] = disruption_schema
+            config.update("dtypes", disruption_schema)
             self.sql_load.load_data(disruptions, "Disruptions", **config)
         except Exception as m:
             logging.critical(m)

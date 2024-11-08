@@ -44,7 +44,7 @@ class StagingDataDAG:
         This method will create a datetime dimension table for the datawarehouse
         """
         dim_datetime_query = """
-            DROP TABLE IF EXISTS Dim_DateTime
+            DROP TABLE IF EXIST Dim_DateTime
             CREATE TABLE Dim_DateTime (
                 id BIGINT PRIMARY KEY,
                 year SMALLINT,
@@ -67,12 +67,11 @@ class StagingDataDAG:
         logging.info(dim_datetime_query)
         
     
-    # NOTE: Will need to be fixed.
+
     def drop_data(self):
         delete_query = """
             DELETE FROM 'Disruptions';
             DELETE FROM 'Stations';
             DELETE FROM 'Services';
             """
-        logging.info(delete_query)
-        #pd.read_sql_query(delete_query, self.ad_hoc)
+        pd.read_sql_query(delete_query, self.ad_hoc)

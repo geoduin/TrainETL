@@ -21,7 +21,7 @@ class CleaningPipeline(Pipeline):
     def run(self):
         logging.info("Hello world")
         try:
-            disruption_schema = {
+            config = {"if_exist": "replace", "dtypes": {
                 "rdt_id": Integer, 
                 "ns_lines": String(500), 
                 "rdt_lines": String(500), 
@@ -36,24 +36,20 @@ class CleaningPipeline(Pipeline):
                 "start_time": DateTime,
                 "end_time": DateTime,
                 "duration_minutes": Integer                                          			
-                }
-            config = {"if_exist": "replace"}
+                }}
 
             disruptions = self.sql_extracter.extract('SELECT * FROM "Disruptions"')
-            stations = self.sql_extracter.extract('SELECT * FROM "Stations"')
-            distances = self.sql_extracter.extract('SELECT * FROM "Distances"')
+            stations = self.sql_extracter.extract('SELECT * FROM "Disruptions"')
+            services = self.sql_extracter.extract('SELECT * FROM "Disruptions"')
 
             disruptions["start_time"] = pd.to_datetime(disruptions["start_time"])
             disruptions["end_time"] = pd.to_datetime(disruptions["end_time"])
 
-            # Filter out all missing values
             disruptions = self.transformers.run(disruptions)
 
-            self.sql_load.load_data(stations, "Stations", **config)
-            self.sql_load.load_data(distances, "Distances", **config)
-            
-            config["dtypes"] = disruption_schema
             self.sql_load.load_data(disruptions, "Disruptions", **config)
+            self.sql_load.load_data(disruptions, "Stations", **config)
+            self.sql_load.load_data(disruptions, "Distances", **config)
         except Exception as m:
             logging.critical(m)
             raise AirflowException("Failed pipeline")

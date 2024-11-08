@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from .etl_abstract import AbstractETL
 from pandas import DataFrame, read_csv, read_sql
 from sqlalchemy import create_engine
-import numpy as np
 
 class Extract(AbstractETL):
 
@@ -34,7 +33,7 @@ class CSVExtract(Extract):
     def extract(self, query:str = None) -> DataFrame:
         if(not query):
             raise ValueError("File path must be inserted")
-        data = read_csv(query, index_col=False)
+        data = read_csv(query)
         return data
     
 

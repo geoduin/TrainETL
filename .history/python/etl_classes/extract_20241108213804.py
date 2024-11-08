@@ -56,7 +56,7 @@ class SQLExtracter(Extract):
         try:
             if(not query):
                 raise ValueError("File path must be inserted")
-            return read_sql(query, con=self.engine)
+            return read_sql(query, con=self.engine, index_col=False)
         except LookupError as m:
             print(m)
             raise ValueError("Read has failed")

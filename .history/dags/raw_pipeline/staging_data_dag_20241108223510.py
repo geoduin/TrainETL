@@ -44,7 +44,7 @@ class StagingDataDAG:
         This method will create a datetime dimension table for the datawarehouse
         """
         dim_datetime_query = """
-            DROP TABLE IF EXISTS Dim_DateTime
+            DROP TABLE IF EXIST Dim_DateTime
             CREATE TABLE Dim_DateTime (
                 id BIGINT PRIMARY KEY,
                 year SMALLINT,

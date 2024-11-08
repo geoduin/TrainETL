@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from .etl_abstract import AbstractETL
 from pandas import DataFrame, read_csv, read_sql
 from sqlalchemy import create_engine
-import numpy as np
 
 class Extract(AbstractETL):
 
@@ -26,7 +25,7 @@ class CSVExtract(Extract):
 
     def run(self):
         # Execute this code.
-        return super().run()
+        return self.get_data()
     
     def apply_change(self, **change):
         return super().apply_change(**change)
@@ -34,7 +33,7 @@ class CSVExtract(Extract):
     def extract(self, query:str = None) -> DataFrame:
         if(not query):
             raise ValueError("File path must be inserted")
-        data = read_csv(query, index_col=False)
+        data = read_csv(query)
         return data
     
 
@@ -49,14 +48,10 @@ class SQLExtracter(Extract):
     def run(self):
         return super().run()
     
-    def apply_change(self, **change):
-        return super().apply_change(**change)
-    
     def extract(self, query = None):
         try:
             if(not query):
                 raise ValueError("File path must be inserted")
             return read_sql(query, con=self.engine)
         except LookupError as m:
-            print(m)
             raise ValueError("Read has failed")

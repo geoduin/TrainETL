@@ -22,8 +22,11 @@ class MissingEndDateTransformer(Transform):
     """
 
     def run(self, data: DataFrame) -> DataFrame:
+
         data["end_time"] = self._fill_current_date(data)
+        logging.info(data["end_time"].dtype)
         data["duration_minutes"] = data.apply(lambda row: self._calculate_duration(row['start_time'], row["end_time"]), axis=1)
+
         return data
     
     def apply_change(self, **change):

@@ -21,13 +21,13 @@ class CleaningPipeline(Pipeline):
     def run(self):
         logging.info("Hello world")
         try:
-            disruption_schema = {
+            config = {"if_exist": "replace", "dtypes": {
                 "rdt_id": Integer, 
-                "ns_lines": String(500), 
-                "rdt_lines": String(500), 
-                "rdt_lines_id":String(500),
-                "rdt_station_names":  String(500),
-                "rdt_station_codes": String(500),
+                "ns_lines": String(200), 
+                "rdt_lines": String(200), 
+                "rdt_lines_id":String(200),
+                "rdt_station_names":  String(200),
+                "rdt_station_codes": String(200),
                 "cause_nl": String(50),
                 "cause_en": String(50),
                 "statistical_cause_nl":	String(80),
@@ -36,23 +36,15 @@ class CleaningPipeline(Pipeline):
                 "start_time": DateTime,
                 "end_time": DateTime,
                 "duration_minutes": Integer                                          			
-                }
-            config = {"if_exist": "replace"}
+                }}
 
             disruptions = self.sql_extracter.extract('SELECT * FROM "Disruptions"')
-            stations = self.sql_extracter.extract('SELECT * FROM "Stations"')
-            distances = self.sql_extracter.extract('SELECT * FROM "Distances"')
 
             disruptions["start_time"] = pd.to_datetime(disruptions["start_time"])
             disruptions["end_time"] = pd.to_datetime(disruptions["end_time"])
 
-            # Filter out all missing values
             disruptions = self.transformers.run(disruptions)
 
-            self.sql_load.load_data(stations, "Stations", **config)
-            self.sql_load.load_data(distances, "Distances", **config)
-            
-            config["dtypes"] = disruption_schema
             self.sql_load.load_data(disruptions, "Disruptions", **config)
         except Exception as m:
             logging.critical(m)

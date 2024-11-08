@@ -38,13 +38,12 @@ class StagingDataDAG:
     def assign_adhoc_connection(self, connection):
         self.ad_hoc = create_engine(connection)
 
-    # NOTE: Will need to be fixed.
     def create_tables(self):
         """
         This method will create a datetime dimension table for the datawarehouse
         """
         dim_datetime_query = """
-            DROP TABLE IF EXISTS Dim_DateTime
+            DROP TABLE IF EXIST Dim_DateTime
             CREATE TABLE Dim_DateTime (
                 id BIGINT PRIMARY KEY,
                 year SMALLINT,
@@ -64,15 +63,14 @@ class StagingDataDAG:
                     EXTRACT(MINUTE FROM d)::SMALLINT AS minute
                 FROM generate_series('2023-01-01 00:00:00'::TIMESTAMP, '2025-12-31 23:59:00'::TIMESTAMP, '1 minute') AS d;
             """
-        logging.info(dim_datetime_query)
+        
         
     
-    # NOTE: Will need to be fixed.
+
     def drop_data(self):
         delete_query = """
             DELETE FROM 'Disruptions';
             DELETE FROM 'Stations';
             DELETE FROM 'Services';
             """
-        logging.info(delete_query)
-        #pd.read_sql_query(delete_query, self.ad_hoc)
+        pd.read_sql_query(delete_query, self.ad_hoc)

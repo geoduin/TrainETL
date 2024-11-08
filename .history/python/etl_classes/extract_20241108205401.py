@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from .etl_abstract import AbstractETL
-from pandas import DataFrame, read_csv, read_sql
+from pandas import DataFrame, read_csv
 from sqlalchemy import create_engine
-import numpy as np
 
 class Extract(AbstractETL):
 
@@ -16,7 +15,7 @@ class Extract(AbstractETL):
         pass
 
     @abstractmethod
-    def extract(self, query: str = None) -> DataFrame:
+    def extract(self, file_path: str = None) -> DataFrame:
         pass
 
 class CSVExtract(Extract):
@@ -26,37 +25,20 @@ class CSVExtract(Extract):
 
     def run(self):
         # Execute this code.
-        return super().run()
+        return self.get_data()
     
     def apply_change(self, **change):
         return super().apply_change(**change)
     
-    def extract(self, query:str = None) -> DataFrame:
-        if(not query):
+    def extract(self, file_path:str = None) -> DataFrame:
+        if(not file_path):
             raise ValueError("File path must be inserted")
-        data = read_csv(query, index_col=False)
+        data = read_csv(file_path)
         return data
     
 
 class SQLExtracter(Extract):
     connection_string:str
-
     def __init__(self, connection:str, next_step = None):
         super().__init__(next_step)
         self.connection_string = connection
-        self.engine = create_engine(self.connection_string)
-
-    def run(self):
-        return super().run()
-    
-    def apply_change(self, **change):
-        return super().apply_change(**change)
-    
-    def extract(self, query = None):
-        try:
-            if(not query):
-                raise ValueError("File path must be inserted")
-            return read_sql(query, con=self.engine)
-        except LookupError as m:
-            print(m)
-            raise ValueError("Read has failed")
