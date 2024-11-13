@@ -1,11 +1,9 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from sqlalchemy import create_engine
-import pandas as pd 
 import logging
 
-class StagingDataDAG:
-    
+class ConvertionDataDag:
+
     def __init__(self, dag_id, start_date, schedule_interval, raw_pipeline):
         self.dag = DAG(
             dag_id = dag_id,
@@ -19,25 +17,16 @@ class StagingDataDAG:
 
     def create_dag(self):
         with self.dag:
-            # First clear all data
-            create_tables = PythonOperator(
-                task_id="Create_tables",
-                python_callable=self.create_tables
-                )
 
-            # RUN ETL Pipeline from raw to staging
-            python_task = PythonOperator(
-                task_id="ETL_To_Staging_DB",
-                python_callable=self.pipeline.run
+            date_dimension_task = PythonOperator(
+                task_id="create_date_tables",
+                python_callable=self.create_datedimension_tables
             )
 
-            create_tables >> python_task
+            python_task = PythonOperator(
+                task_id="extract_raw_data",
+                python_callable=self.pipeline.run
+            )
+            date_dimension_task >> python_task
 
         return self.dag
-
-    def create_tables(self):
-        """
-        This method will create a datetime dimension table for the datawarehouse
-        """
-        logging.info("Empty method")
-        

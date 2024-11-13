@@ -16,6 +16,7 @@ class RawDataDAG:
             tags=["example"]
         )
         self.pipeline = raw_pipeline
+        self.sqlhandler = sqlhandler
 
     def create_dag(self):
         with self.dag:

@@ -1,13 +1,15 @@
 from ..pipeline import Pipeline
-from python import Load, Extract
+from python import Load, Extract, Transform
 import logging
-from airflow import AirflowException
+
+from python import RawPipeline, CSVExtract, SQLLoad, SQLHandler
 
 class RawPipeline(Pipeline):
     csv_extract: Extract
     sql_load: Load
+    sql_handler: SQLHandler
 
-    def __init__(self, csv_extracter: Extract = None, sql_loader: Load = None, sql_handler = None):
+    def __init__(self, csv_extracter: Extract = None, sql_loader: Load = None, sql_handler: SQLHandler = None):
         self.csv_extract = csv_extracter
         self.sql_load = sql_loader
         self.sql_handler = sql_handler
@@ -32,8 +34,8 @@ class RawPipeline(Pipeline):
     
     def create_datedimension_tables(self):
         dim_datetime_query = """
-            DROP TABLE IF EXISTS "Dim_DateTime";
-            CREATE TABLE "Dim_DateTime" (
+            DROP TABLE IF EXISTS Dim_DateTime;
+            CREATE TABLE Dim_DateTime (
                 id BIGINT PRIMARY KEY,
                 year SMALLINT,
                 month SMALLINT,
@@ -42,7 +44,7 @@ class RawPipeline(Pipeline):
                 minute SMALLINT
             );
 
-            INSERT INTO "Dim_DateTime" (id, year, month, day, hour, minute)
+            INSERT INTO Dim_DateTime (id, year, month, day, hour, minute)
                 SELECT 
                     TO_CHAR(d, 'YYYYMMDDHH24MI')::BIGINT AS id,
                     EXTRACT(YEAR FROM d)::SMALLINT AS year,

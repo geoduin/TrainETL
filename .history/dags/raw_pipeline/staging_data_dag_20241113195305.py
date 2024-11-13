@@ -34,10 +34,24 @@ class StagingDataDAG:
             create_tables >> python_task
 
         return self.dag
+    
+    def assign_adhoc_connection(self, connection):
+        self.ad_hoc = create_engine(connection)
 
+    # NOTE: Will need to be fixed.
     def create_tables(self):
         """
         This method will create a datetime dimension table for the datawarehouse
         """
         logging.info("Empty method")
         
+    
+    # NOTE: Will need to be fixed.
+    def drop_data(self):
+        delete_query = """
+            DELETE FROM 'Disruptions';
+            DELETE FROM 'Stations';
+            DELETE FROM 'Services';
+            """
+        logging.info(delete_query)
+        #pd.read_sql_query(delete_query, self.ad_hoc)

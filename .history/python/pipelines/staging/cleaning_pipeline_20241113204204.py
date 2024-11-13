@@ -19,6 +19,7 @@ class CleaningPipeline(Pipeline):
         self.transformers = transformer
 
     def run(self):
+        logging.info("Hello world")
         try:
             disruption_schema = {
                 "rdt_id": Integer, 
@@ -37,7 +38,7 @@ class CleaningPipeline(Pipeline):
                 "duration_minutes": Integer                                          			
                 }
             config = {"if_exist": "replace"}
-            dim_dates = self.sql_extracter.extract('SELECT * FROM "Dim_DateTime"')
+            dim_dates = self.sql_extracter('SELECT * FROM "Dim_DateTime"')
             disruptions = self.sql_extracter.extract('SELECT * FROM "Disruptions"')
             stations = self.sql_extracter.extract('SELECT * FROM "Stations"')
             distances = self.sql_extracter.extract('SELECT * FROM "Distances"')

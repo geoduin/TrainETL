@@ -21,11 +21,10 @@ sql_staging_loader = SQLLoad(staging_connection)
 
 missing_values_transformer = MissingEndDateTransformer()
 sql_handler = SQLHandler(raw_connection)
-sql_convertion_handler = SQLHandler(staging_connection)
-
+sql_convertion_handler = SQLHandler("")
 raw_pipeline = RawPipeline(csv_extracter=csv_extracter, sql_loader=sql_loader, sql_handler=sql_handler)
 clean_pipeline = CleaningPipeline(sql_extracter=sql_extracter, sql_loader=sql_staging_loader, transformer=missing_values_transformer)
-convertion_pipeline = ConvertionPipeline(sql_handler=sql_convertion_handler)
+convertion_pipeline = ConvertionPipeline()
 
 # Define the basic parameters of the DAG, like schedule and start_date
 dag2 = RawDataDAG("test_python_function", start_date=datetime(2024, 11, 5), schedule_interval="@daily", raw_pipeline=raw_pipeline)

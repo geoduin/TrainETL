@@ -32,8 +32,8 @@ class RawPipeline(Pipeline):
     
     def create_datedimension_tables(self):
         dim_datetime_query = """
-            DROP TABLE IF EXISTS "Dim_DateTime";
-            CREATE TABLE "Dim_DateTime" (
+            DROP TABLE IF EXISTS Dim_DateTime;
+            CREATE TABLE Dim_DateTime (
                 id BIGINT PRIMARY KEY,
                 year SMALLINT,
                 month SMALLINT,
@@ -42,7 +42,7 @@ class RawPipeline(Pipeline):
                 minute SMALLINT
             );
 
-            INSERT INTO "Dim_DateTime" (id, year, month, day, hour, minute)
+            INSERT INTO Dim_DateTime (id, year, month, day, hour, minute)
                 SELECT 
                     TO_CHAR(d, 'YYYYMMDDHH24MI')::BIGINT AS id,
                     EXTRACT(YEAR FROM d)::SMALLINT AS year,

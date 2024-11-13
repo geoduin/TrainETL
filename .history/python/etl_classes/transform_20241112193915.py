@@ -42,19 +42,3 @@ class MissingEndDateTransformer(Transform):
         Fills in currentdate
         """
         return data["end_time"].fillna(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    
-class ConvertionTransformer(Transform):
-    """
-    Meant to apply transformation to the dataframes
-    """
-
-    def __init__(self, date_key_converter, column_splitter, convertion_pipelines):
-        self.dateconverter = date_key_converter
-        self.splitter = column_splitter
-        self.convertion_pipeline = convertion_pipelines
-
-    def run(self, data):
-        return super().run(data)
-    
-    def apply_change(self, **change):
-        return super().apply_change(**change)

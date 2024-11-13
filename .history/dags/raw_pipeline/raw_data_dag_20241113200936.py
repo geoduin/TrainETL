@@ -5,6 +5,11 @@ from pendulum import datetime
 import pandas as pd 
 from python import RawPipeline
 
+# Hier zal nog gekeken worden of dit niet anders kan.
+# station_extracter = CSVExtract("include/disruptions/disruptions-<XX>.csv")
+# disruption_extracter = CSVExtract("include/disruptions/disruptions-<XX>.csv", station_extracter)
+# distance_extracter = CSVExtract("include/disruptions/disruptions-<XX>.csv", disruption_extracter)
+
 class RawDataDAG:
     def __init__(self, dag_id, start_date, schedule_interval, raw_pipeline: RawPipeline):
         self.dag = DAG(
@@ -16,6 +21,7 @@ class RawDataDAG:
             tags=["example"]
         )
         self.pipeline = raw_pipeline
+        self.sqlhandler = sqlhandler
 
     def create_dag(self):
         with self.dag:
