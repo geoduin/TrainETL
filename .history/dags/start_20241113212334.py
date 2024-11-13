@@ -32,9 +32,6 @@ dag2 = RawDataDAG("extract_raw_data", start_date=datetime(2024, 11, 5), schedule
 dag_staging = StagingDataDAG("clean_up_data", start_date=datetime(2024, 11, 8), schedule_interval="@daily", raw_pipeline=clean_pipeline)
 dag_convertion = ConvertionDataDag("convert_data", start_date=datetime(2024, 11, 5), schedule_interval="@daily", raw_pipeline=convertion_pipeline)
 
-# Load into Data Warehouse
-# Send data to data scientists and analysts
-
 dag2.create_dag()
 dag_staging.create_dag()
 dag_convertion.create_dag()

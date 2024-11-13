@@ -4,9 +4,7 @@ from python import ConvertionPipeline
 import logging
 
 class ConvertionDataDag:
-    """
-    This DAG is responsible for converting staged data to seperate tables with data in at least the 1 NF.
-    """
+
     def __init__(self, dag_id, start_date, schedule_interval, raw_pipeline: ConvertionPipeline):
         self.dag = DAG(
             dag_id = dag_id,
