@@ -73,7 +73,7 @@ class ConvertionPipeline(Pipeline):
             
             CREATE TABLE "Disruption" (
                 rdt_id BIGINT PRIMARY KEY,
-                duration_minutes INTEGER,
+                duration_minutes DOUBLE,
                 cause_id BIGINT,
                 start_time BIGINT,
                 end_time BIGINT

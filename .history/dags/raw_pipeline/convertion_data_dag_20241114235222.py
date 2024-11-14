@@ -12,7 +12,7 @@ class ConvertionDataDag:
             dag_id = dag_id,
             start_date=start_date,
             schedule_interval=schedule_interval,
-            default_args={"owner": "Xin", "retries": 3},
+            default_args={"owner": "Astro", "retries": 3},
             catchup=False,
             tags=["example"]
         )
@@ -21,7 +21,7 @@ class ConvertionDataDag:
     def create_dag(self):
         with self.dag:
             delete_tables = PythonOperator(
-                task_id="delete_tables",
+                task_id="run_table_creation",
                 python_callable=self.pipeline.drop_data
             )
 
@@ -31,10 +31,10 @@ class ConvertionDataDag:
             )
 
             python_task = PythonOperator(
-                task_id="run_convertion_etl",
+                task_id="run_convertion_steps",
                 python_callable=self.pipeline.run
             )
             
-            delete_tables >> define_tables >> python_task
+            define_tables >> python_task
 
         return self.dag

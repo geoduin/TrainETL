@@ -21,7 +21,7 @@ sql_staging_loader = SQLLoad(staging_connection)
 
 missing_values_transformer = MissingEndDateTransformer()
 sql_handler = SQLHandler(raw_connection)
-sql_convertion_handler = SQLHandler(convertion_connection)
+sql_convertion_handler = SQLHandler(staging_connection)
 
 raw_pipeline = RawPipeline(csv_extracter=csv_extracter, sql_loader=sql_loader, sql_handler=sql_handler)
 clean_pipeline = CleaningPipeline(sql_extracter=sql_extracter, sql_loader=sql_staging_loader, transformer=missing_values_transformer)

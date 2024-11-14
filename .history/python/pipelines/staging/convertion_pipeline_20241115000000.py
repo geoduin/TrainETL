@@ -34,10 +34,11 @@ class ConvertionPipeline(Pipeline):
         """
 
         cause_table = """
-            CREATE TABLE "Cause" (
+            
+            CREATE TABLE "Cause"(
                 cause_id SERIAL PRIMARY KEY,
                 cause VARCHAR(100),
-                cause_group VARCHAR(100)
+                cause_group
             )
         """
 
@@ -45,16 +46,16 @@ class ConvertionPipeline(Pipeline):
             
             CREATE TABLE "Stations" (
                 id BIGINT PRIMARY KEY,
-                code VARCHAR(100),
+                code TEXT,
                 uic BIGINT,
-                name VARCHAR(100),
-                name_medium VARCHAR(100),
-                name_long VARCHAR(100),
-                slug VARCHAR(100),
-                country VARCHAR(100),
-                TYPE VARCHAR(100),
-                geo_lat DOUBLE PRECISION,
-                geo_lng DOUBLE PRECISION
+                name TEXT,
+                name_medium TEXT,
+                name_long TEXT,
+                slug TEXT,
+                country TEXT,
+                TYPE TEXT,
+                geo_lat DOUBLE,
+                geo_lng DOUBLE
             )
         """
 
@@ -63,7 +64,7 @@ class ConvertionPipeline(Pipeline):
             CREATE TABLE "Line_Disruption" (
                 rdt_id BIGINT,
                 rdt_lines_id BIGINT,
-                rdt_line VARCHAR(100),
+                rdt_line TEXT,
                 begin_station BIGINT,
                 end_station BIGINT
             )
@@ -73,7 +74,7 @@ class ConvertionPipeline(Pipeline):
             
             CREATE TABLE "Disruption" (
                 rdt_id BIGINT PRIMARY KEY,
-                duration_minutes INTEGER,
+                duration_minutes DOUBLE,
                 cause_id BIGINT,
                 start_time BIGINT,
                 end_time BIGINT

@@ -53,8 +53,8 @@ class ConvertionPipeline(Pipeline):
                 slug VARCHAR(100),
                 country VARCHAR(100),
                 TYPE VARCHAR(100),
-                geo_lat DOUBLE PRECISION,
-                geo_lng DOUBLE PRECISION
+                geo_lat DOUBLE,
+                geo_lng DOUBLE
             )
         """
 
@@ -73,7 +73,7 @@ class ConvertionPipeline(Pipeline):
             
             CREATE TABLE "Disruption" (
                 rdt_id BIGINT PRIMARY KEY,
-                duration_minutes INTEGER,
+                duration_minutes DOUBLE,
                 cause_id BIGINT,
                 start_time BIGINT,
                 end_time BIGINT
