@@ -34,7 +34,7 @@ class CSVExtract(Extract):
     def extract(self, query:str = None) -> DataFrame:
         if(not query):
             raise ValueError("File path must be inserted")
-        data = read_csv(query, index_col=None)
+        data = read_csv(query, index_col=True)
         return data
     
 

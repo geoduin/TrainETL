@@ -36,10 +36,9 @@ class ConvertionPipeline(Pipeline):
 
         # Load data
         logging.info("Load data into convertion database")
-        loading_config = {"if_exist": "append"}
-        self.loader.load_data(self.dim_date, "Dim_DateTime",**loading_config)
-        self.loader.load_data(self.cause_data, "Cause", **loading_config)
-        self.loader.load_data(self.station_data, "Stations",**loading_config)
+        self.loader.load_data(self.dim_date, "Dim_DateTime")
+        self.loader.load_data(self.cause_data, "Cause")
+        self.loader.load_data(self.station_data, "Stations")
         return super().run()
     
     def create_tables(self):
@@ -69,12 +68,12 @@ class ConvertionPipeline(Pipeline):
                 id BIGINT PRIMARY KEY,
                 code VARCHAR(100),
                 uic BIGINT,
-                name_short VARCHAR(100),
+                name VARCHAR(100),
                 name_medium VARCHAR(100),
                 name_long VARCHAR(100),
                 slug VARCHAR(100),
                 country VARCHAR(100),
-                type VARCHAR(100),
+                TYPE VARCHAR(100),
                 geo_lat DOUBLE PRECISION,
                 geo_lng DOUBLE PRECISION
             )

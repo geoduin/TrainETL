@@ -74,7 +74,7 @@ class ConvertionPipeline(Pipeline):
                 name_long VARCHAR(100),
                 slug VARCHAR(100),
                 country VARCHAR(100),
-                type VARCHAR(100),
+                TYPE VARCHAR(100),
                 geo_lat DOUBLE PRECISION,
                 geo_lng DOUBLE PRECISION
             )

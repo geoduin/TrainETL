@@ -23,23 +23,12 @@ class ConvertionPipeline(Pipeline):
 
     def run(self):
         # One to one extract and load, without any transformation
-        # Note need to be tested.
-        logging.info("Extract data from staging database")
         self.dim_date = self.extracter.extract('SELECT * FROM "Dim_DateTime";')
-        self.cause_data = self.extracter.extract("""
-                                                 SELECT DISTINCT "cause_en" as "cause", "statistical_cause_en" AS "statistical_cause", "cause_group" 
-                                                 FROM "Disruptions";
-                                                 """)
+        self.cause_data = self.extracter.extract('SELECT DISTINCT cause_eng as cause, cause_group FROM "Disruptions";')
         self.station_data = self.extracter.extract('SELECT * FROM "Stations";')
         # Disruption, Line_Station need to be transformed in Python.
-        logging.info("Transform data")
 
         # Load data
-        logging.info("Load data into convertion database")
-        loading_config = {"if_exist": "append"}
-        self.loader.load_data(self.dim_date, "Dim_DateTime",**loading_config)
-        self.loader.load_data(self.cause_data, "Cause", **loading_config)
-        self.loader.load_data(self.station_data, "Stations",**loading_config)
         return super().run()
     
     def create_tables(self):
@@ -58,7 +47,6 @@ class ConvertionPipeline(Pipeline):
             CREATE TABLE "Cause" (
                 cause_id SERIAL PRIMARY KEY,
                 cause VARCHAR(100),
-                statistical_cause VARCHAR(100),
                 cause_group VARCHAR(100)
             )
         """
@@ -69,12 +57,12 @@ class ConvertionPipeline(Pipeline):
                 id BIGINT PRIMARY KEY,
                 code VARCHAR(100),
                 uic BIGINT,
-                name_short VARCHAR(100),
+                name VARCHAR(100),
                 name_medium VARCHAR(100),
                 name_long VARCHAR(100),
                 slug VARCHAR(100),
                 country VARCHAR(100),
-                type VARCHAR(100),
+                TYPE VARCHAR(100),
                 geo_lat DOUBLE PRECISION,
                 geo_lng DOUBLE PRECISION
             )
@@ -93,7 +81,7 @@ class ConvertionPipeline(Pipeline):
 
         disruption_table = """
             
-            CREATE TABLE "Disruptions" (
+            CREATE TABLE "Disruption" (
                 rdt_id BIGINT PRIMARY KEY,
                 duration_minutes INTEGER,
                 cause_id BIGINT,
@@ -116,7 +104,7 @@ class ConvertionPipeline(Pipeline):
     def drop_data(self):
         drop_tables = """
             DROP TABLE IF EXISTS "Line_Disruption";
-            DROP TABLE IF EXISTS "Disruptions";
+            DROP TABLE IF EXISTS "Disruption";
             DROP TABLE IF EXISTS "Dim_DateTime";
             DROP TABLE IF EXISTS "Cause";
             DROP TABLE IF EXISTS "Stations";

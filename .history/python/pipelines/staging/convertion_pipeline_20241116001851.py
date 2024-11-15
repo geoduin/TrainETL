@@ -69,12 +69,12 @@ class ConvertionPipeline(Pipeline):
                 id BIGINT PRIMARY KEY,
                 code VARCHAR(100),
                 uic BIGINT,
-                name_short VARCHAR(100),
+                name VARCHAR(100),
                 name_medium VARCHAR(100),
                 name_long VARCHAR(100),
                 slug VARCHAR(100),
                 country VARCHAR(100),
-                type VARCHAR(100),
+                TYPE VARCHAR(100),
                 geo_lat DOUBLE PRECISION,
                 geo_lng DOUBLE PRECISION
             )

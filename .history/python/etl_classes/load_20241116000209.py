@@ -42,4 +42,4 @@ class SQLLoad(Load):
         table_schema =  config.get("dtypes",None)
             
         # Subject to change
-        data.to_sql(table, self.connection, if_exists=config.get("if_exist", "fail"), dtype=table_schema, index=False)
+        data.to_sql(table, self.connection, if_exists=config.get("if_exist", "append"), dtype=table_schema, index=False)
