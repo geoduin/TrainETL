@@ -29,8 +29,10 @@ class ConvertionPipeline(Pipeline):
         # Note need to be tested.
         logging.info("Extract data from staging database")
         self.dim_date = self.extracter.extract('SELECT * FROM "Dim_DateTime";')
-        self.cause_data = self.extracter.extract(""" SELECT DISTINCT "cause_en", "statistical_cause_en", "cause_group" FROM "Disruptions";""")
-        self.line_station = self.extracter.extract('SELECT * FROM "rdt_id", "rdt_lines_id", "rdt_lines" FROM "Disruptions";')
+        self.cause_data = self.extracter.extract("""
+                                                 SELECT DISTINCT "cause_en", "statistical_cause_en", "cause_group" 
+                                                 FROM "Disruptions";
+                                                 """)
         self.station_data = self.extracter.extract('SELECT * FROM "Stations";')
         self.disruption = self.extracter.extract('SELECT * FROM "Disruptions";')
         # Disruption, Line_Station need to be transformed in Python.
@@ -41,7 +43,7 @@ class ConvertionPipeline(Pipeline):
         logging.info("Load data into convertion database")
         loading_config = {"if_exist": "append"}
         self.loader.load_data(self.dim_date, "Dim_DateTime",**loading_config)
-        self.loader.load_data(self.cause_data, "Dim_Cause", **loading_config)
+        self.loader.load_data(self.cause_data, "Cause", **loading_config)
         self.loader.load_data(self.station_data, "Stations",**loading_config)
         self.loader.load_data(self.disruption, "Disruptions", **loading_config)
         # Now line_station
@@ -60,7 +62,7 @@ class ConvertionPipeline(Pipeline):
         """
 
         cause_table = """
-            CREATE TABLE "Dim_Cause" (
+            CREATE TABLE "Cause" (
                 cause_id SERIAL PRIMARY KEY,
                 cause VARCHAR(100) NOT NULL,
                 statistical_cause VARCHAR(100) NOT NULL,
@@ -69,7 +71,8 @@ class ConvertionPipeline(Pipeline):
             )
         """
 
-        station_table = """   
+        station_table = """
+            
             CREATE TABLE "Stations" (
                 id BIGINT PRIMARY KEY,
                 code VARCHAR(100),
@@ -86,6 +89,7 @@ class ConvertionPipeline(Pipeline):
         """
 
         line_table = """
+            
             CREATE TABLE "Line_Disruption" (
                 rdt_id BIGINT,
                 rdt_lines_id BIGINT,
@@ -96,12 +100,13 @@ class ConvertionPipeline(Pipeline):
         """
 
         disruption_table = """
+            
             CREATE TABLE "Disruptions" (
                 rdt_id BIGINT PRIMARY KEY,
                 duration_minutes INTEGER,
-                cause_id BIGINT REFERENCES Cause(cause_id),
-                start_time BIGINT REFERENCES Dim_DateTime(id),
-                end_time BIGINT REFERENCES Dim_DateTime(id)
+                cause_id BIGINT REFERENCES cause,
+                start_time BIGINT REFERENCES "Dim_DateTime",
+                end_time BIGINT REFERENCES "Dim_DateTime"
             )
         """
         

@@ -4,7 +4,7 @@ class ColumnSplitter:
     def __init__(self):
         pass
 
-    def split_columns(self, df: DataFrame, column:str, delimiter:str, new_columns: list[str]):
+    def split_columns(self, df: DataFrame, delimiter:str, new_columns: list[str]):
         """
         Variables accepted:
         - df is a DataFrame
@@ -15,10 +15,7 @@ class ColumnSplitter:
         - The new_column length should contain the same amount of elements as the splitted result.
         - Delimiter is mandatory.
         """
-        splitted_columns = df[column].str.split(delimiter)
-
-        len(splitted_columns.values)
-        return df
+        raise NotImplementedError("Not implemented dumbass")
     
     def split_column_vertically(self, df, delimiter:str, new_column: str):
         raise NotImplementedError("Not implemented dumbass")

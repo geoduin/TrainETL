@@ -57,16 +57,16 @@ def test_cleanup_missing_values():
         assert result["duration"].iloc[1] == 70
         assert str(result["end_time"].iloc[1]) == "2024-11-07 19:30:32"
 
-# def test_column_splitter_incorrect_amount_columns():
-#     splitter = ColumnSplitter()
-#     columns = ["BeginStation"]
-#     record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
-#     record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}
+def test_column_splitter_incorrect_amount_columns():
+    splitter = ColumnSplitter()
+    columns = ["BeginStation"]
+    record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
+    record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}
 
-#     dff = pd.DataFrame([record_one, record_two]) 
-#     result = splitter.split_columns(dff, ",", columns)
+    dff = pd.DataFrame([record_one, record_two]) 
+    result = splitter.split_columns(dff, ",", columns)
 
-#     assert result
+    assert result
 
 def test_column_splitter_correct_horizontal_split():
     splitter = ColumnSplitter()

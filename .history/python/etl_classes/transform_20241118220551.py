@@ -66,17 +66,17 @@ class ConvertionTransformer(Transform):
         # Convert datetime to datekeys
         disruption_table["start_time"] = disruption_table.apply(lambda row: self.dateconverter.convert_datetime_to_key(row["start_time"]), axis=1)
         disruption_table["end_time"] = disruption_table.apply(lambda row: self.dateconverter.convert_datetime_to_key(row["end_time"]), axis=1)
+        disruption_table["cause"] = disruption_table["cause_en"]
 
         # Create line_station table
         line_station_table = disruption_table[["rdt_id", "rdt_lines_id", "rdt_lines"]]
 
         # Drop unnecessary columns.
         disruption_table = disruption_table.drop(columns=["cause_nl", "cause_en", "statistical_cause_nl", "statistical_cause_en", "cause_group", "ns_lines", "rdt_lines", "rdt_lines_id", "rdt_station_names", "rdt_station_codes"])
-        cause_table.columns = ["cause", "statistical_cause", "cause_group", "cause_id"]
-
+        cause_table.columns ["cause_en", "statistical_cause_en", "cause_group", "cause_id"]
+        
         # Apply changed disruption table pipeline
         self.convertion_pipeline.disruption = disruption_table
-        self.cause_data = cause_table
         return super().run(data)
     
     def apply_change(self, **change):
