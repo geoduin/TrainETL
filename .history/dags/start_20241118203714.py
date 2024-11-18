@@ -34,10 +34,10 @@ clean_pipeline = CleaningPipeline(sql_extracter=sql_extracter, sql_loader=sql_st
 convertion_pipeline = ConvertionPipeline(sql_handler=sql_convertion_handler, sql_extracter=sql_extracter_staging, sql_loader=sql_convertion_loader, transformer=convertion_transformer)
 
 # Define the basic parameters of the DAG, like schedule and start_date
-test_dag = TestDag("debug_dag", start_date=datetime(2024, 11, 18), schedule_interval="@daily")
-dag2 = RawDataDAG("extract_raw_data", start_date=datetime(2024, 11, 18), schedule_interval="@daily", raw_pipeline=raw_pipeline)
-dag_staging = StagingDataDAG("clean_up_data", start_date=datetime(2024, 11, 18), schedule_interval="@daily", raw_pipeline=clean_pipeline)
-dag_convertion = ConvertionDataDag("convert_data", start_date=datetime(2024, 11, 18), schedule_interval="@daily", raw_pipeline=convertion_pipeline)
+test_dag = TestDag("debug_dag", start_date=datetime(2024, 11, 5), schedule_interval="@daily")
+dag2 = RawDataDAG("extract_raw_data", start_date=datetime(2024, 11, 5), schedule_interval="@daily", raw_pipeline=raw_pipeline)
+dag_staging = StagingDataDAG("clean_up_data", start_date=datetime(2024, 11, 8), schedule_interval="@daily", raw_pipeline=clean_pipeline)
+dag_convertion = ConvertionDataDag("convert_data", start_date=datetime(2024, 11, 5), schedule_interval="@daily", raw_pipeline=convertion_pipeline)
 
 # Load into Data Warehouse
 # Send data to data scientists and analysts

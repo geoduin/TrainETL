@@ -83,11 +83,11 @@ def test_cleanup_missing_values():
 def test_convertion_datetime_to_key():
     datekeyhandler = DateKeyHandler()
 
-    data = [{"id": 1, "content": "Hello world", "date": datetime(2024, 4, 12, 15, 37, 20)}]
+    data = {"id": 1, "content": "Hello world", "date": datetime(2024, 4, 12, 15, 37, 20)}
     df = pd.DataFrame(data)
-    df["datekey"] = df.apply(lambda row: datekeyhandler.convert_datetime_to_key(row["date"]), axis=1)
-    datekey =  df.iloc[0]["datekey"]
-    assert datekey == 202404121537
+    df["datekey"] = df.apply(lambda row: datekeyhandler.convert_datetime_to_key(row["date"]))
+
+    assert df.iloc[0]["datekey"] == 202404121537
 
 
 # def test_column_splitter_incorrect_vertical_split_last_value_missing():

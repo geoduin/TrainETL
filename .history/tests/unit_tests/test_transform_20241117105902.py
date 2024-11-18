@@ -3,7 +3,7 @@ import os
 from unittest.mock import patch
 
 from datetime import datetime
-from python import MissingEndDateTransformer, ColumnSplitter, DateKeyHandler
+from python import MissingEndDateTransformer, ColumnSplitter
 base_dir = os.path.dirname(os.path.realpath(__file__))
 
 # Test case impute empty data.
@@ -57,49 +57,35 @@ def test_cleanup_missing_values():
         assert result["duration"].iloc[1] == 70
         assert str(result["end_time"].iloc[1]) == "2024-11-07 19:30:32"
 
-# def test_column_splitter_incorrect_amount_columns():
-#     splitter = ColumnSplitter()
-#     columns = ["BeginStation"]
-#     record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
-#     record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}
+def test_column_splitter_incorrect_amount_columns():
+    splitter = ColumnSplitter()
+    columns = ["BeginStation"]
+    record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
+    record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}
 
-#     dff = pd.DataFrame([record_one, record_two]) 
-#     result = splitter.split_columns(dff, ",", columns)
+    dff = pd.DataFrame([record_one, record_two]) 
+    result = splitter.split_columns(dff, ",", columns)
 
-#     assert result
+    assert result
 
-# def test_column_splitter_correct_horizontal_split():
-#     splitter = ColumnSplitter()
-#     columns = ["BeginStation", "EndStation"]
+def test_column_splitter_correct_horizontal_split():
+    splitter = ColumnSplitter()
+    columns = ["BeginStation", "EndStation"]
 
     
-#     record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
-#     record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}
+    record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
+    record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}
 
-#     dff = pd.DataFrame([record_one, record_two]) 
-#     result = splitter.split_columns(dff, ",", columns)
-#     assert result
+    dff = pd.DataFrame([record_one, record_two]) 
+    result = splitter.split_columns(dff, ",", columns)
+    assert result
 
-def test_convertion_datetime_to_key():
-    datekeyhandler = DateKeyHandler()
+def test_column_splitter_incorrect_vertical_split_last_value_missing():
+    splitter = ColumnSplitter()
+    record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
+    record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}
 
-    data = [{"id": 1, "content": "Hello world", "date": datetime(2024, 4, 12, 15, 37, 20)}]
-    df = pd.DataFrame(data)
-    df["datekey"] = df.apply(lambda row: datekeyhandler.convert_datetime_to_key(row["date"]), axis=1)
-    datekey =  df.iloc[0]["datekey"]
-    assert datekey == 202404121537
-
-
-# def test_column_splitter_incorrect_vertical_split_last_value_missing():
-#     splitter = ColumnSplitter()
-#     record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
-#     record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}
-#     dff = pd.DataFrame([record_one, record_two]) 
-
-# def test_column_splitter_incorrect_vertical_split_uneven_filled_values():
-#     splitter = ColumnSplitter()
-#     record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
-#     record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}
-#     dff = pd.DataFrame([record_one, record_two]) 
-
-#     result = splitter.split_column_vertically(dff, ",", "rdt_line_id")
+def test_column_splitter_incorrect_vertical_split_uneven_filled_values():
+    splitter = ColumnSplitter()
+    record_one = {"rdt_id": "40500", "rdt_lines": "Den Haag HS - Rotterdam Centraal", "rdt_lines_id": "11"}
+    record_two = {"rdt_id": "40504", "rdt_lines": "Alkmaar - Den Helder, Alkmaar - Hoorn", "rdt_lines_id": "162,163"}

@@ -1,5 +1,5 @@
 from ..pipeline import Pipeline
-from python import SQLHandler, Transform, Extract, Load, SQLLoad, SQLExtracter, ConvertionTransformer
+from python import SQLHandler, Transform, Extract, Load, SQLLoad, SQLExtracter
 from pandas import DataFrame
 
 import logging
@@ -16,13 +16,10 @@ class ConvertionPipeline(Pipeline):
     convertion_transformer: Transform
     loader: Load
 
-    def __init__(self, sql_handler: SQLHandler, sql_extracter: SQLExtracter, sql_loader: SQLLoad, transformer: ConvertionTransformer):
+    def __init__(self, sql_handler: SQLHandler, sql_extracter: SQLExtracter, sql_loader: SQLLoad):
         self.sql_handler = sql_handler
         self.extracter = sql_extracter
         self.loader = sql_loader
-        self.convertion_transformer = transformer
-        # Inserts itself into the transformer
-        self.convertion_transformer.apply_change(**{"pipeline_instance": self})
 
     def run(self):
         # One to one extract and load, without any transformation
@@ -34,10 +31,8 @@ class ConvertionPipeline(Pipeline):
                                                  FROM "Disruptions";
                                                  """)
         self.station_data = self.extracter.extract('SELECT * FROM "Stations";')
-        self.disruption = self.extracter.extract('SELECT * FROM "Disruptions";')
         # Disruption, Line_Station need to be transformed in Python.
         logging.info("Transform data")
-        self.convertion_transformer.run({})
 
         # Load data
         logging.info("Load data into convertion database")
@@ -45,8 +40,6 @@ class ConvertionPipeline(Pipeline):
         self.loader.load_data(self.dim_date, "Dim_DateTime",**loading_config)
         self.loader.load_data(self.cause_data, "Cause", **loading_config)
         self.loader.load_data(self.station_data, "Stations",**loading_config)
-        self.loader.load_data(self.disruption, "Disruptions", **loading_config)
-        # Now line_station
         return super().run()
     
     def create_tables(self):

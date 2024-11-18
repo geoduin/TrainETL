@@ -34,7 +34,7 @@ class ConvertionPipeline(Pipeline):
                                                  FROM "Disruptions";
                                                  """)
         self.station_data = self.extracter.extract('SELECT * FROM "Stations";')
-        self.disruption = self.extracter.extract('SELECT * FROM "Disruptions";')
+        self.disruption = self.extracter.extract('SELECT * FROM Disruptions;')
         # Disruption, Line_Station need to be transformed in Python.
         logging.info("Transform data")
         self.convertion_transformer.run({})

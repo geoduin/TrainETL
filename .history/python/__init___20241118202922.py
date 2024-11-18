@@ -13,4 +13,4 @@ __init__ = [CSVExtract, SQLLoad, Transform,
             Extract, Load, RawPipeline, CleaningPipeline, 
             MissingEndDateTransformer, SQLHandler, 
             ColumnSplitter, ConvertionPipeline, DataWarehousePipeline, 
-            SQLExtracter, DateKeyHandler, ConvertionTransformer]
+            SQLExtracter, DateKeyHandler]

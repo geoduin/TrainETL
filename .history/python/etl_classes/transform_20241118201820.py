@@ -1,8 +1,8 @@
 from .etl_abstract import AbstractETL
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from pandas import DataFrame
 from datetime import datetime
-from ..service import DateKeyHandler, ColumnSplitter
+from python import ConvertionPipeline, DateKeyHandler, ColumnSplitter
 import logging
 
 class Transform(AbstractETL):
@@ -48,32 +48,20 @@ class ConvertionTransformer(Transform):
     """
     Meant to apply transformation to the dataframes
     """
-    def __init__(self, date_key_converter: DateKeyHandler, column_splitter: ColumnSplitter):
+
+    def __init__(self, date_key_converter, column_splitter, convertion_pipelines: ConvertionPipeline):
         self.dateconverter = date_key_converter
         self.splitter = column_splitter
-        self.convertion_pipeline = None
+        self.convertion_pipeline = convertion_pipelines
 
     def run(self, data):
+
         # Transform disruption table
+        # Convert datetime to datekeys
         disruption_table = self.convertion_pipeline.disruption
 
-        # Convert datetime to datekeys
-        disruption_table["start_time"] = disruption_table.apply(lambda row: self.dateconverter.convert_datetime_to_key(row["start_time"]), axis=1)
-        disruption_table["end_time"] = disruption_table.apply(lambda row: self.dateconverter.convert_datetime_to_key(row["end_time"]), axis=1)
-        disruption_table["cause"] = disruption_table["cause_en"]
-
-        # Create line_station table
-        line_station_table = disruption_table[["rdt_id", "rdt_lines_id", "rdt_lines"]]
-
-        # Drop unnecessary columns.
-        disruption_table = disruption_table.drop(columns=["cause_nl", "cause_en", "statistical_cause_nl", "statistical_cause_en", "cause_group", "ns_lines", "rdt_lines", "rdt_lines_id", "rdt_station_names", "rdt_station_codes"])
-        
-        # Apply changed disruption table pipeline
-        self.convertion_pipeline.disruption = disruption_table
+        disruption_table["start_time"] = disruption_table.apply(lambda row: self.dateconverter., axis=1)
         return super().run(data)
     
     def apply_change(self, **change):
-        self.convertion_pipeline = change.get("pipeline_instance", None)
-        if self.convertion_pipeline is None: 
-            raise ValueError("Needs a convertion pipeline")
         return super().apply_change(**change)

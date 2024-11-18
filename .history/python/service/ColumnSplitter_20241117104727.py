@@ -13,7 +13,4 @@ class ColumnSplitter:
         - The new_column length should contain the same amount of elements as the splitted result.
         - Delimiter is mandatory.
         """
-        raise NotImplementedError("Not implemented dumbass")
-    
-    def split_column_vertically(self, df, delimiter:str, new_column: str):
-        raise NotImplementedError("Not implemented dumbass")
+        return df

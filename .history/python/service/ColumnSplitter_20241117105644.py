@@ -15,5 +15,5 @@ class ColumnSplitter:
         """
         raise NotImplementedError("Not implemented dumbass")
     
-    def split_column_vertically(self, df, delimiter:str, new_column: str):
+    def split_column_vertically(df, delimiter:str, new_column: str):
         raise NotImplementedError("Not implemented dumbass")

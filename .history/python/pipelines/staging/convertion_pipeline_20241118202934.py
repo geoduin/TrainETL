@@ -20,9 +20,6 @@ class ConvertionPipeline(Pipeline):
         self.sql_handler = sql_handler
         self.extracter = sql_extracter
         self.loader = sql_loader
-        self.convertion_transformer = transformer
-        # Inserts itself into the transformer
-        self.convertion_transformer.apply_change(**{"pipeline_instance": self})
 
     def run(self):
         # One to one extract and load, without any transformation
@@ -34,10 +31,8 @@ class ConvertionPipeline(Pipeline):
                                                  FROM "Disruptions";
                                                  """)
         self.station_data = self.extracter.extract('SELECT * FROM "Stations";')
-        self.disruption = self.extracter.extract('SELECT * FROM "Disruptions";')
         # Disruption, Line_Station need to be transformed in Python.
         logging.info("Transform data")
-        self.convertion_transformer.run({})
 
         # Load data
         logging.info("Load data into convertion database")
