@@ -6,9 +6,8 @@ import requests
 from raw_pipeline.raw_data_dag import RawDataDAG
 from raw_pipeline.staging_data_dag import StagingDataDAG
 from raw_pipeline.convertion_data_dag import ConvertionDataDag
-from raw_pipeline.datawarehouse_dag import DataWarehouseDAG
 from raw_pipeline.test_dag import TestDag
-
+from .datawarehouse_dag import DataWarehouseDAG
 
 from python import RawPipeline, CSVExtract, SQLLoad, CleaningPipeline, SQLExtracter, MissingEndDateTransformer, SQLHandler, ConvertionPipeline, ConvertionTransformer, DateKeyHandler, ColumnSplitter, StringRemover, DataWarehousePipeline
 
@@ -48,11 +47,10 @@ dag_staging = StagingDataDAG("clean_up_data", start_date=datetime(2024, 11, 18),
 dag_convertion = ConvertionDataDag("convert_data", start_date=datetime(2024, 11, 18), schedule_interval="@daily", raw_pipeline=convertion_pipeline)
 
 # Load into Data Warehouse
-data_warehouse_dag = DataWarehouseDAG("data_warehouse", start_date=datetime(2024, 11, 18), schedule_interval="@daily", pipeline=data_warehouse_pipeline)
+data_warehouse_dag = DataWarehouseDAG("load_data", start_date=datetime(2024, 11, 18), schedule_interval="@daily")
 # Send data to data scientists and analysts
 
 dag2.create_dag()
 dag_staging.create_dag()
 dag_convertion.create_dag()
 test_dag.create_dag()
-data_warehouse_dag.create_dag()

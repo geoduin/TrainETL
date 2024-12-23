@@ -48,7 +48,7 @@ dag_staging = StagingDataDAG("clean_up_data", start_date=datetime(2024, 11, 18),
 dag_convertion = ConvertionDataDag("convert_data", start_date=datetime(2024, 11, 18), schedule_interval="@daily", raw_pipeline=convertion_pipeline)
 
 # Load into Data Warehouse
-data_warehouse_dag = DataWarehouseDAG("data_warehouse", start_date=datetime(2024, 11, 18), schedule_interval="@daily", pipeline=data_warehouse_pipeline)
+data_warehouse_dag = DataWarehouseDAG("load_data", start_date=datetime(2024, 11, 18), schedule_interval="@daily", pipeline=data_warehouse_pipeline)
 # Send data to data scientists and analysts
 
 dag2.create_dag()
