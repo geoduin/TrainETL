@@ -44,7 +44,7 @@ class ConvertionPipeline(Pipeline):
         self.loader.load_data(self.dim_date, "Dim_DateTime",**loading_config)
         self.loader.load_data(self.cause_data, "Dim_Cause", **loading_config)
         self.loader.load_data(self.station_data, "Dim_Station",**loading_config)
-        self.loader.load_data(self.disruption, "Disruptions", **loading_config)
+        self.loader.load_data(self.disruption, "Fact_Disruptions", **loading_config)
         self.loader.load_data(self.line_station, "Dim_Station_Lines", **loading_config)
         
         return super().run()
@@ -72,7 +72,7 @@ class ConvertionPipeline(Pipeline):
         """
 
         station_table = """   
-            CREATE TABLE "Stations" (
+            CREATE TABLE "Dim_Station" (
                 id BIGINT PRIMARY KEY,
                 code VARCHAR(100),
                 uic BIGINT,
@@ -88,7 +88,7 @@ class ConvertionPipeline(Pipeline):
         """
 
         line_table = """
-            CREATE TABLE "Line_Disruption" (
+            CREATE TABLE "Dim_Station_Lines" (
                 rdt_id BIGINT,
                 rdt_lines_id BIGINT,
                 rdt_line VARCHAR(100),
@@ -98,12 +98,12 @@ class ConvertionPipeline(Pipeline):
         """
 
         disruption_table = """
-            CREATE TABLE "Disruptions" (
+            CREATE TABLE "Fact_Disruptions" (
                 rdt_id BIGINT PRIMARY KEY,
                 duration_minutes INTEGER,
-                cause_id BIGINT REFERENCES Cause(cause_id),
-                start_time BIGINT REFERENCES Dim_DateTime(id),
-                end_time BIGINT REFERENCES Dim_DateTime(id)
+                cause_id BIGINT REFERENCES Dim_Cause (cause_id),
+                start_time BIGINT REFERENCES Dim_DateTime (id),
+                end_time BIGINT REFERENCES Dim_DateTime (id)
             )
         """
         
@@ -120,11 +120,11 @@ class ConvertionPipeline(Pipeline):
     
     def drop_data(self):
         drop_tables = """
-            DROP TABLE IF EXISTS "Line_Disruption";
-            DROP TABLE IF EXISTS "Disruptions";
+            DROP TABLE IF EXISTS "Dim_Station_Lines";
+            DROP TABLE IF EXISTS "Fact_Disruptions";
             DROP TABLE IF EXISTS "Dim_DateTime";
-            DROP TABLE IF EXISTS "Cause";
-            DROP TABLE IF EXISTS "Stations";
+            DROP TABLE IF EXISTS "Dim_Cause";
+            DROP TABLE IF EXISTS "Dim_Station";
         """
         try:
 

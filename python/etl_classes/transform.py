@@ -44,7 +44,7 @@ class MissingEndDateTransformer(Transform):
         """
         Fills in currentdate
         """
-        return data["end_time"].fillna(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return data["end_time"].fillna(data["end_time"].max())
     
 class ConvertionTransformer(Transform):
     """
@@ -141,17 +141,19 @@ class SCDType1Transformer(SCDTransformer):
 
         return super().run(data)
     
-    def merge_data(self, data: DataFrame, source, target, source_key="id", target_key="id"):
+    def merge_data(self, data: DataFrame, source, target, source_key=["id"], target_key=["id"]):
         try:
             # Validate if columns source and target are the same
             uppercase = [col.upper() for col in data.columns]
             set_values = ", ".join([f"t.{col} = s.{col}" for col in uppercase])
             column_values = ", ".join(uppercase)
             insert_values = ", ".join([f"s.{col}" for col in uppercase])
+
+            on_clause = " AND ".join([f"t.{TK} = s.{SK}" for (SK, TK) in zip(source_key, target_key)])
             query = f"""
                 MERGE INTO "{target}" AS t
                 USING "{source}" AS s 
-                ON t.{target_key} = s.{source_key}
+                ON {on_clause}
                 WHEN MATCHED THEN UPDATE SET {set_values}
                 WHEN NOT MATCHED THEN 
                 INSERT ({column_values}) VALUES ({insert_values});

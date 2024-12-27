@@ -22,8 +22,8 @@ class DataWarehouseDAG:
     def create_dag(self):
         with self.dag:
             python_task = PythonOperator(
-                task_id="create_databases",
-                python_callable=self.pipeline.create_temp_tables
+                task_id="delete_tables",
+                python_callable=self.pipeline.delete_temp_tables
             )
 
             create_tables_if_not_exists = PythonOperator(
@@ -36,8 +36,7 @@ class DataWarehouseDAG:
                 python_callable=self.pipeline.run
             )
             
-            python_task >> run_pipeline
-            create_tables_if_not_exists >> run_pipeline
+            create_tables_if_not_exists >> python_task >> run_pipeline
         return self.dag
     
     def default_behavior(self):

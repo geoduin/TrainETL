@@ -9,7 +9,7 @@ base_dir = os.path.dirname(os.path.realpath(__file__))
 # Test case impute empty data.
 def test_missing_end_time_value():
     transformer = MissingEndDateTransformer()
-    current_datetime = datetime.now()
+    current_datetime = "2024-11-08 18:35:28"
 
     data = pd.DataFrame({"end_time": ["2024-11-08 18:35:28", None, None], 
                          "start_time": ["2024-11-06 18:20:28", "2024-11-07 18:20:28", "2024-11-7 18:20:28"]})
@@ -19,8 +19,8 @@ def test_missing_end_time_value():
 
     data['end_time'] = transformer._fill_current_date(data) 
     assert str(data["end_time"].iloc[0]) == "2024-11-08 18:35:28"
-    assert str(data["end_time"].iloc[1]) == current_datetime.strftime("%Y-%m-%d %H:%M:%S")
-    assert str(data["end_time"].iloc[2]) == current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    assert str(data["end_time"].iloc[1]) == current_datetime
+    assert str(data["end_time"].iloc[2]) == current_datetime
 
 def test_duration_calculation():
     transformer = MissingEndDateTransformer()
@@ -133,7 +133,7 @@ def test_scd1_add_records():
         # Insert records into temp_table 
         dff.to_sql("temp_test", connection, if_exists="replace", index=False)
         # Act
-        SCD1.merge_data(dff, "temp_test", "dim_test")
+        SCD1.merge_data(dff, ["temp_test"], ["dim_test"])
 
         # Assert
         result = pd.read_sql("SELECT * FROM dim_test", connection)
@@ -174,7 +174,49 @@ def test_scd1_add_and_update():
         # Insert records into temp_table 
         dff.to_sql("temp_test2", connection, if_exists="replace", index=False)
         # Act
-        SCD1.merge_data(dff, "temp_test2", "dim_test2")
+        SCD1.merge_data(dff,["temp_test2"], ["dim_test2"])
+
+        # Assert
+        result = pd.read_sql("SELECT * FROM dim_test2", connection)
+
+        assert len(result) == 4
+        assert result.iloc[0].city == "Almere"
+        assert result.iloc[1].city == "Amsterdam"
+        assert result.iloc[2].city == "Utrecht"
+        assert result.iloc[3].city == "Stockholm"
+    except:
+        print("Test has failed")
+    finally:
+        # Clean up
+        snowflake_handler.run_raw_query("DROP TABLE IF EXISTS dim_test2")
+
+def test_scd1_add_and_update_on_multiple_keys():
+    connection_string = os.environ.get("SNOWFLAKE_CONNECTION")
+    snowflake_handler = SnowflakeHandler(connection_string)
+    connection = snowflake_handler.get_connection()
+    try:
+        SCD1 = SCDType1Transformer(snowflake_handler)
+
+        # Create test tables
+        snowflake_handler.run_raw_query("CREATE TABLE IF NOT EXISTS dim_test (id INT, lid INT, name STRING, age INT, city STRING);")
+        existing_data =[{"id": 1, "lid": 12,"name": "John", "age": 25, "city": "Rotterdam"}, 
+                        {"id": 2, "lid": 12,"name": "Alice", "age": 30, "city": "Amsterdam"},
+                        {"id": 3, "lid": 14, "name": "Anderson", "age": 30, "city": "Utrecht"}]
+    
+        insert_df = pd.DataFrame(existing_data)
+        insert_df.to_sql("dim_test2", connection, if_exists="replace", index=False)
+
+        record_one = {"id": 1, "lid": 12, "name": "John", "age": 25, "city": "Almere"}
+        record_two = {"id": 2, "lid": 12, "name": "Alice", "age": 30, "city": "Amsterdam"}
+        record_three = {"id": 3, "lid": 14, "name": "Alice", "age": 30, "city": "Utrecht"}
+        record_four = {"id": 4, "lid": 13, "name": "Olav", "age": 55, "city": "Stockholm"}
+
+        dff = pd.DataFrame([record_one, record_two, record_three, record_four]) 
+
+        # Insert records into temp_table 
+        dff.to_sql("temp_test2", connection, if_exists="replace", index=False)
+        # Act
+        SCD1.merge_data(dff,["temp_test2"], ["dim_test2"], source_key=["id", "lid"], target_key=["id", "lid"])
 
         # Assert
         result = pd.read_sql("SELECT * FROM dim_test2", connection)
