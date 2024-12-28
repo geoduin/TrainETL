@@ -26,7 +26,7 @@ class DeliveryDag():
             data_science_delivery = SimpleHttpOperator(
                 task_id="deliver_to_data_scientists",
                 http_conn_id='data_science',
-                endpoint='/load/data_scientists',
+                endpoint='/load/data_scientist',
                 method='PUT',
                 headers={"Content-Type": "application/json"},
                 dag=self.dag,
