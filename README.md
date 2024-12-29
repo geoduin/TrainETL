@@ -1,48 +1,88 @@
-Overview
-========
+# Documentation of TrainETL project
 
-Welcome to Astronomer! This project was generated after you ran 'astro dev init' using the Astronomer CLI. This readme describes the contents of the project, as well as how to run Apache Airflow on your local machine.
+## Links:
+- [ERD Diagram](documentation/ERD.png)
+- [Solution Architecture](documentation/Solution architecture.png)
+- [Installation manual](documentation/InstallationAstro.md)
 
-Project Contents
-================
+## Required software
+- Docker
+- Astro CLI
+- Python
+- Snowflake database
 
-Your Astro project contains the following files and folders:
+## Installing Astro CLI and Docker
+In order to run this project, it requires the Astro CLI and Docker.
+Follow the installation manual following this link: [Installation manual](documentation/InstallationAstro.md)
 
-- dags: This folder contains the Python files for your Airflow DAGs. By default, this directory includes one example DAG:
-    - `example_astronauts`: This DAG shows a simple ETL pipeline example that queries the list of astronauts currently in space from the Open Notify API and prints a statement for each astronaut. The DAG uses the TaskFlow API to define tasks in Python, and dynamic task mapping to dynamically print a statement for each astronaut. For more on how this DAG works, see our [Getting started tutorial](https://www.astronomer.io/docs/learn/get-started-with-airflow).
-- Dockerfile: This file contains a versioned Astro Runtime Docker image that provides a differentiated Airflow experience. If you want to execute other commands or overrides at runtime, specify them here.
-- include: This folder contains any additional files that you want to include as part of your project. It is empty by default.
-- packages.txt: Install OS-level packages needed for your project by adding them to this file. It is empty by default.
-- requirements.txt: Install Python packages needed for your project by adding them to this file. It is empty by default.
-- plugins: Add custom or community plugins for your project to this file. It is empty by default.
-- airflow_settings.yaml: Use this local-only file to specify Airflow Connections, Variables, and Pools instead of entering them in the Airflow UI as you develop DAGs in this project.
+## Running Docker compose
+This project also runs some Postgres databases, outside of the Airflow docker containers. For this reason a separate docker compose has been written to automatically create Postgres database servers.
+Run these commands to create all of the databases:
 
-Deploy Your Project Locally
-===========================
+1. Navigate to the directory containing the `docker-compose.yaml` file:
+    ```sh
+    cd /path/to/your/project
+    ```
 
-1. Start Airflow on your local machine by running 'astro dev start'.
+2. Start the Docker services defined in the `docker-compose.yml` file:
+    ```sh
+    docker-compose up -d
+    ```
 
-This command will spin up 4 Docker containers on your machine, each for a different Airflow component:
+3. To stop the Docker services, run:
+    ```sh
+    docker-compose down
+    ```
+## Running Airflow with the Astro CLI.
+This section provides detailed instructions on how to set up and run Apache Airflow using the Astro CLI. It covers the initialization of a new Airflow project, starting the Airflow services, and accessing the Airflow web interface. Additionally, it includes commands for stopping and restarting Airflow, as well as running unit tests to ensure the project is functioning correctly.
+### 1. Initialize an Airflow Project
 
-- Postgres: Airflow's Metadata Database
-- Webserver: The Airflow component responsible for rendering the Airflow UI
-- Scheduler: The Airflow component responsible for monitoring and triggering tasks
-- Triggerer: The Airflow component responsible for triggering deferred tasks
+1. Create a new directory for your Airflow project:
+    ```sh
+    mkdir my-airflow-project
+    cd my-airflow-project
+    ```
+2. Initialize the project with Astronomer CLI:
+    ```sh
+    astro dev init
+    ```
 
-2. Verify that all 4 Docker containers were created by running 'docker ps'.
+### 2. Start Airflow
 
-Note: Running 'astro dev start' will start your project with the Airflow Webserver exposed at port 8080 and Postgres exposed at port 5432. If you already have either of those ports allocated, you can either [stop your existing Docker containers or change the port](https://www.astronomer.io/docs/astro/cli/troubleshoot-locally#ports-are-not-available-for-my-local-airflow-webserver).
+1. Start the Airflow services using Docker:
+    ```sh
+    astro dev start
+    ```
+2. Access the Airflow web interface by navigating to `http://localhost:8080` in your web browser.
 
-3. Access the Airflow UI for your local Airflow project. To do so, go to http://localhost:8080/ and log in with 'admin' for both your Username and Password.
+### 3. Stop or Restarting Airflow via Astro
 
-You should also be able to access your Postgres Database at 'localhost:5432/postgres'.
+* Stopping Airflow:
+    ```sh
+    astro dev stop
+    ```
+* Restarting Airflow:
+    ```sh
+    astro dev restart
+    ```
 
-Deploy Your Project to Astronomer
-=================================
+### 4. Executing 
 
-If you have an Astronomer account, pushing code to a Deployment on Astronomer is simple. For deploying instructions, refer to Astronomer documentation: https://www.astronomer.io/docs/astro/deploy-code/
+* Stopping Airflow:
+    ```sh
+    astro dev stop
+    ```
+* Restarting Airflow:
+    ```sh
+    astro dev restart
+    ```
 
-Contact
-=======
+### 5. Testing
+In order to execute unit-test within this project. You need to run this command:
 
-The Astronomer CLI is maintained with love by the Astronomer team. To report a bug or suggest a change, reach out to our support.
+```sh
+astro dev pytest
+```
+
+## Conclusion
+Congrats on installing this project. Have fun!
