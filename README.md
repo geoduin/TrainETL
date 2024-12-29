@@ -1,8 +1,8 @@
 # Documentation of TrainETL project
 
 ## Links:
-- [ERD Diagram](documentation/ERD.png)
-- [Solution Architecture](documentation/Solution architecture.png)
+- [Technical documentation](documentation/solution.md)
+- [Test cases](documentation/test_doc.md)
 - [Installation manual](documentation/InstallationAstro.md)
 
 ## Required software
