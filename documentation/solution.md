@@ -53,6 +53,10 @@ The data warehouse serves as the single source of truth for the TrainETL project
 **Outcome:**
 - The data warehouse provides a reliable and consistent source of truth for all data analysis and reporting needs.
 - The use of Type 1 SCD ensures that the most current data is always available without maintaining historical versions.
+## Class diagram
+![Class diagram](ClassDiagram.png)
+
+This is the class diagram of the system.
 
 ## Solution Architecture
 ![Solution Architecture Diagram](solution_architecture.png)
